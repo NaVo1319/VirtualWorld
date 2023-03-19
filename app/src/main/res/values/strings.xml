@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">VirtualWorld</string>
+    <string name="please_sign_in">Please Sign In or Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="errorEmailPassword">Error in email or password: The password must be longer than 8 characters, the email must be similar to example@gmail.com </string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_Google">Sign In with Google</string>
+    <string name="register">Register</string>
+    <string name="sing_out">Sing Out</string>
+    <string name="age">Age</string>
+    <string name="users_list">Users</string>
+    <string name="profile">Profile</string>
+    <string name="current_chat">Chat</string>
+    <string name="submit">Submit</string>
+    <string-array name="lang_long">
+        <item>russian</item>
+        <item>english</item>
+        <item>chinese</item>
+        <item>arabic</item>
+        <item>french</item>
+        <item>german</item>
+        <item>spanish</item>
+        <item>italian</item>
+        <item>japanese</item>
+        <item>korean</item>
+        <item>greek</item>
+        <item>dutch</item>
+        <item>hindi</item>
+        <item>turkish</item>
+    </string-array>
+    <string-array name="lang_short">
+        <item>ru</item>
+        <item>en</item>
+        <item>zh</item>
+        <item>ar</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>es</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>el</item>
+        <item>nl</item>
+        <item>hi</item>
+        <item>tr</item>
+    </string-array>
+</resources>

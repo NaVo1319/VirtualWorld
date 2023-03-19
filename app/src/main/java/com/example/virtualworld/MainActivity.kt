@@ -1,0 +1,303 @@
+package com.example.virtualworld
+
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.INTERNET
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
+import com.example.virtualworld.ui.theme.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import com.example.virtualworld.data.User
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.database.FirebaseDatabase
+import java.util.*
+
+class MainActivity : ComponentActivity() {
+    lateinit var launcher: ActivityResultLauncher<Intent>
+    lateinit var auth: FirebaseAuth
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        auth = Firebase.auth
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if(account!=null){
+                    firebaseAuthWithGoogle(account.idToken!!)
+                }
+            }catch (e: ApiException){
+                Log.d("My log","Api exception")}
+        }
+        //checkAuthState()
+        setContent {
+            var errorMes by remember { mutableStateOf(false)}
+            Box(modifier = Modifier.fillMaxSize()){
+                Image(
+                    painter = painterResource(id = R.drawable.background_login),
+                    contentDescription = "Background Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+            form { errorMes = it }
+            errorMessage(errorMes)
+        }
+    }
+    @Composable
+    private fun errorMessage(errorMes: Boolean){
+        if(errorMes)Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter, ){
+            Card(modifier = Modifier
+                .padding(10.dp),
+                shape = RoundedCornerShape(15.dp),
+                elevation = 5.dp){
+                Text(text = getString(R.string.errorEmailPassword), fontSize = 15.sp,modifier = Modifier.padding(10.dp))
+            }
+        }
+    }
+    @Composable
+    private fun form(setError: (Boolean) ->Unit){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+            Card() {
+                
+            }
+        }
+    }
+    @Composable
+    private fun authForm( ): Boolean{
+        var email by remember { mutableStateOf("")}
+        var password by remember { mutableStateOf("")}
+        var authButton by remember { mutableStateOf(true)}
+        var errorMes by remember { mutableStateOf(false)}
+        Column {
+            val maxLength = 20
+            val lightBlue = Color(0xffd8e6ff)
+            val blue = Color(0xff76a9ff)
+            Text(
+                text = getString(R.string.email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                textAlign = TextAlign.Start,
+                color = blue
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = email,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = lightBlue,
+                    cursorColor = Color.Black,
+                    disabledLabelColor = lightBlue,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                onValueChange = {
+                    if (it.length <= maxLength) email = it
+                },
+                shape = RoundedCornerShape(8.dp),
+                singleLine = true,
+                trailingIcon = {
+                    if (email.isNotEmpty()) {
+                        IconButton(onClick = { email = "" }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            )
+            Text(
+                text = "${email.length} / $maxLength",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                textAlign = TextAlign.End,
+                color = blue
+            )
+        }
+        Column {
+            val maxLength = 15
+            val lightBlue = Color(0xffd8e6ff)
+            val blue = Color(0xff76a9ff)
+            Text(
+                text = getString(R.string.password),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                textAlign = TextAlign.Start,
+                color = blue
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = password,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = lightBlue,
+                    cursorColor = Color.Black,
+                    disabledLabelColor = lightBlue,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                onValueChange = {
+                    if (it.length <= maxLength) password = it
+                },
+                shape = RoundedCornerShape(8.dp),
+                singleLine = true,
+                trailingIcon = {
+                    if (password.isNotEmpty()) {
+                        IconButton(onClick = { password = "" }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            )
+            Text(
+                text = "${password.length} / $maxLength",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                textAlign = TextAlign.End,
+                color = blue
+            )
+        }
+        Row() {
+            Button(modifier = Modifier.padding(10.dp),
+                enabled = authButton,
+                colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
+                onClick = {
+                    errorMes = authCheck(email,password).not()
+                }) {
+                Text(text =getString(R.string.register),color = Color.White)
+            }
+            Button(modifier = Modifier.padding(10.dp),
+                enabled = authButton,
+                colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
+                onClick = {
+                    errorMes = signIn(email,password).not()
+                }) {
+                Text(text =getString(R.string.sign_in),color = Color.White)
+            }
+        }
+        return errorMes
+    }
+    private fun authCheck(email: String, password: String): Boolean{
+        val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        if(emailPattern.matches(email) && password.length>=8){
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d("AuthStatus", "createUserWithEmail:success")
+                        saveUser()
+                        checkAuthState()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("AuthStatus", "createUserWithEmail:failure", task.exception)
+                        Toast.makeText(baseContext, "Authentication failed.",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            return true
+        }else{
+            return false
+        }
+    }
+    private fun signIn(email: String, password: String): Boolean{
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("AuthStatus", "signInWithEmail:success")
+                    val user = auth.currentUser
+                    checkAuthState()
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("AuthStatus", "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        return true
+    }
+    private fun getClient(): GoogleSignInClient {
+        val sign = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(this,sign)
+    }
+    private fun signInWithGoogle(){
+        checkAuthState()
+        val signInClient = getClient()
+        launcher.launch(signInClient.signInIntent)
+    }
+    private fun firebaseAuthWithGoogle(idToken: String){
+        val credential = GoogleAuthProvider.getCredential(idToken,null)
+        auth.signInWithCredential(credential).addOnCompleteListener{ it ->
+            if(it.isSuccessful){
+                Log.d("MyLog","Auth is done")
+                FirebaseDatabase.getInstance().getReference("/users").child(auth.uid.toString()).get().addOnSuccessListener {user->
+                    if (!user.exists())saveUser()
+                }
+                val i = Intent(this,ActionActivity::class.java)
+                startActivity(i)
+            }else{
+                Log.d("MyLog","Auth is error")
+            }
+        }
+    }
+    private fun checkAuthState(){
+        if(auth.currentUser!=null){
+            val i = Intent(this,ActionActivity::class.java)
+            startActivity(i)
+        }
+    }
+    private fun saveUser(){
+        val database = Firebase.database
+        val ref = database.getReference("users/${auth.currentUser?.uid}")
+        val user = User(
+            auth.currentUser?.displayName ?: "New user",
+            "New User",
+            0,
+            false,
+            Locale.getDefault().getLanguage().toString()
+        )
+        ref.setValue(user)
+    }
+}
