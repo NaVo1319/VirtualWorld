@@ -11,10 +11,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,6 +22,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
             }catch (e: ApiException){
                 Log.d("My log","Api exception")}
         }
-        //checkAuthState()
+        checkAuthState()
         setContent {
             var errorMes by remember { mutableStateOf(false)}
             Box(modifier = Modifier.fillMaxSize()){
@@ -91,131 +92,54 @@ class MainActivity : ComponentActivity() {
     }
     @Composable
     private fun form(setError: (Boolean) ->Unit){
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            Card() {
-                
-            }
-        }
-    }
-    @Composable
-    private fun authForm( ): Boolean{
+        val colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            cursorColor = Color.Black,
+            disabledLabelColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
         var email by remember { mutableStateOf("")}
         var password by remember { mutableStateOf("")}
         var authButton by remember { mutableStateOf(true)}
-        var errorMes by remember { mutableStateOf(false)}
-        Column {
-            val maxLength = 20
-            val lightBlue = Color(0xffd8e6ff)
-            val blue = Color(0xff76a9ff)
-            Text(
-                text = getString(R.string.email),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                textAlign = TextAlign.Start,
-                color = blue
-            )
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = email,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = lightBlue,
-                    cursorColor = Color.Black,
-                    disabledLabelColor = lightBlue,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                onValueChange = {
-                    if (it.length <= maxLength) email = it
-                },
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true,
-                trailingIcon = {
-                    if (email.isNotEmpty()) {
-                        IconButton(onClick = { email = "" }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null
-                            )
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp), contentAlignment = Alignment.Center){
+            Card(modifier = Modifier.border(BorderStroke(4.dp, Color.White)),backgroundColor = Color.Black.copy(alpha = 0.7f)) {
+                Column(modifier = Modifier.padding(10.dp)) {
+                    Text(text = getString(R.string.email),modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
+                    TextField(value = email, onValueChange = {email = it}, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                        colors = colors)
+                    Text(text = getString(R.string.password),modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
+                    TextField(value = password, onValueChange = {password = it}, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                        colors = colors)
+                    Row() {
+                        Button(modifier = Modifier.padding(10.dp),
+                            enabled = authButton,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                            onClick = { setError(signIn(email,password).not()) }) {
+                            Text(text =getString(R.string.register),color = Color.Black)
+                        }
+                        Button(modifier = Modifier.padding(10.dp),
+                            enabled = authButton,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                            onClick = { setError(signIn(email,password).not()) }) {
+                            Text(text =getString(R.string.sign_in),color = Color.Black)
                         }
                     }
+                    Image(
+                        painter = painterResource(id = R.drawable.google_login_icon),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(80.dp).clip(CircleShape).padding(10.dp).clickable { signInWithGoogle() }
+                    )
                 }
-            )
-            Text(
-                text = "${email.length} / $maxLength",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
-                textAlign = TextAlign.End,
-                color = blue
-            )
-        }
-        Column {
-            val maxLength = 15
-            val lightBlue = Color(0xffd8e6ff)
-            val blue = Color(0xff76a9ff)
-            Text(
-                text = getString(R.string.password),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                textAlign = TextAlign.Start,
-                color = blue
-            )
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = password,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = lightBlue,
-                    cursorColor = Color.Black,
-                    disabledLabelColor = lightBlue,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                onValueChange = {
-                    if (it.length <= maxLength) password = it
-                },
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true,
-                trailingIcon = {
-                    if (password.isNotEmpty()) {
-                        IconButton(onClick = { password = "" }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
-            )
-            Text(
-                text = "${password.length} / $maxLength",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
-                textAlign = TextAlign.End,
-                color = blue
-            )
-        }
-        Row() {
-            Button(modifier = Modifier.padding(10.dp),
-                enabled = authButton,
-                colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
-                onClick = {
-                    errorMes = authCheck(email,password).not()
-                }) {
-                Text(text =getString(R.string.register),color = Color.White)
-            }
-            Button(modifier = Modifier.padding(10.dp),
-                enabled = authButton,
-                colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
-                onClick = {
-                    errorMes = signIn(email,password).not()
-                }) {
-                Text(text =getString(R.string.sign_in),color = Color.White)
             }
         }
-        return errorMes
     }
     private fun authCheck(email: String, password: String): Boolean{
         val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")

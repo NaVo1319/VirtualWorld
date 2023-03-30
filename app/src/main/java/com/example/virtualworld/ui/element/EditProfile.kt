@@ -1,7 +1,9 @@
 package com.example.virtualworld.ui.element
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,24 +41,17 @@ class EditProfile() {
         database = Firebase.database
         authuser = profileData.user
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            Background()
             var name by remember { mutableStateOf(authuser.name)}
             var lang by remember { mutableStateOf(authuser.lang)}
             var age by remember { mutableStateOf(authuser.age.toString())}
             var description by remember { mutableStateOf(   authuser.description)}
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                shape = RoundedCornerShape(15.dp),
-                elevation = 5.dp
-            ) {
+            Card(modifier = Modifier.border(BorderStroke(4.dp, Color.White)),backgroundColor = Color.Black.copy(alpha = 0.7f)) {
                 Box(){
                     Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "Edit Your Profile", fontSize = 35.sp)
+                        Text(text = "Edit Your Profile", fontSize = 35.sp, color = Color.White)
                         textField(nameField = "Nick name",{name = it},name.toString())
                         textField(nameField = "Description",{description = it},description.toString())
-                        DropDawnMenu(items = stringArrayResource(R.array.lang_long), title = "Lang", 0)
+                        DropDawnMenu(items = stringArrayResource(R.array.lang_short), title = "Lang", 0)
                         numberField(nameField = "Age",{age = it },age)
                         SubmitButton(name.toString(),description.toString(), age = age,function)
                     }
@@ -65,80 +60,48 @@ class EditProfile() {
         }
     }
     @Composable
-    fun Background(){
-        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-            drawRect(SolidColor(Color.Black.copy(alpha = 0.8f)))
-        })
-    }
-    @Composable
     fun numberField(nameField: String, f:(String) -> Unit,startValue: String){
+        val colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            cursorColor = Color.Black,
+            disabledLabelColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
         Column {
-            val lightBlue = Color(0xffd8e6ff)
-            val blue = Color(0xff76a9ff)
-            Text(
-                text = nameField,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                textAlign = TextAlign.Start,
-                color = blue
-            )
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = startValue,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = lightBlue,
-                    cursorColor = Color.Black,
-                    disabledLabelColor = lightBlue,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                onValueChange = f,
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true,
+            Text(text = nameField,modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
+            TextField(value = startValue, onValueChange = f, modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+                colors = colors,
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrect = true,
                     keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
-            )
+                    imeAction = ImeAction.Next))
         }
     }
     @Composable
     private fun textField(nameField: String, f:(String) -> Unit,startValue: String){
+        val colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            cursorColor = Color.Black,
+            disabledLabelColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
         Column {
-            val lightBlue = Color(0xffd8e6ff)
-            val blue = Color(0xff76a9ff)
-            Text(
-                text = nameField,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                textAlign = TextAlign.Start,
-                color = blue
-            )
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = startValue,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = lightBlue,
-                    cursorColor = Color.Black,
-                    disabledLabelColor = lightBlue,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                onValueChange = f,
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true,
-            )
+            Text(text = nameField,modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
+            TextField(value = startValue, onValueChange = f, modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+                colors = colors)
         }
     }
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun DropDawnMenu(items: Array<String>, title: String, selected: Int) {
         val lightBlue = Color(0xffd8e6ff)
-        val blue = Color(0xff76a9ff)
         val listItems = items
         // state of the menu
         var expanded by remember {
@@ -157,7 +120,7 @@ class EditProfile() {
                     .fillMaxWidth()
                     .padding(bottom = 4.dp),
                 textAlign = TextAlign.Start,
-                color = blue
+                color = Color.White
             )
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -177,9 +140,9 @@ class EditProfile() {
                         )
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = lightBlue,
+                        backgroundColor = Color.White,
                         cursorColor = Color.Black,
-                        disabledLabelColor = lightBlue,
+                        disabledLabelColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     )
@@ -215,8 +178,8 @@ class EditProfile() {
             database.child("age").setValue(age.toInt())
             function(false)
         },
-            colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor)) {
-            Text(text = stringResource(id = R.string.submit), color = Color.White)
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)) {
+            Text(text = stringResource(id = R.string.submit))
         }
     }
 }
