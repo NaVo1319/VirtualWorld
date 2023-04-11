@@ -10,10 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.virtualworld.data.User
 import com.google.firebase.storage.FirebaseStorage
+import com.example.virtualworld.R
 
 class AvatarForUserList {
     @Composable
@@ -26,6 +28,7 @@ class AvatarForUserList {
         getUrl("Body/${ user.body }.png") { body = it }
         getUrl("Hair/${ user.hair }.png") { hair = it }
         getUrl("Cloths/${ user.cloths }.png" ) { cloths = it }
+        Log.d("AvatarUser","$user")
         Log.d("AvatarMyLog","body: ${body}\nhair: $hair\ncloth:  $cloths\nBack:  $back")
         Box(){
             AsyncImage(
@@ -39,6 +42,7 @@ class AvatarForUserList {
             )
             AsyncImage(
                 model = body,
+                placeholder = painterResource(id = R.drawable.base_body),
                 contentDescription = "Body",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -48,6 +52,7 @@ class AvatarForUserList {
             )
             AsyncImage(
                 model = hair,
+                placeholder = painterResource(id = R.drawable.base_hair),
                 contentDescription = "hair",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -57,6 +62,7 @@ class AvatarForUserList {
             )
             AsyncImage(
                 model = cloths,
+                placeholder = painterResource(id = R.drawable.base_cloth),
                 contentDescription = "cloth",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -71,7 +77,7 @@ class AvatarForUserList {
         storageRef.downloadUrl.addOnSuccessListener{
             callback(it.toString())
         }.addOnFailureListener{
-            callback(it.toString())
+            callback(filename)
         }
     }
 }
