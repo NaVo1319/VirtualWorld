@@ -5,5 +5,5 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 open class EditProfileData: ViewModel() {
-    var user by  mutableStateOf<User>(User())
+    var user by  mutableStateOf(User())
 }

@@ -20,10 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -35,17 +32,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.virtualworld.data.*
-import com.example.virtualworld.screens.ChatScreen
-import com.example.virtualworld.screens.ProfileScreen
-import com.example.virtualworld.screens.UsersListScreen
+import com.example.virtualworld.screens.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.coroutines.suspendCoroutine
 
 class ActionActivity : ComponentActivity() {
     private val allowedPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -69,14 +68,14 @@ class ActionActivity : ComponentActivity() {
         database = Firebase.database
         auth = Firebase.auth
         checkAuthState()
-        onChangeListener(database.getReference("/users"))
         onChangeUser(database.getReference("/users/${auth.uid}"))
+        onChangeListener(database.getReference("/users"))
         setContent {
             Column() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "users") {
                     composable("users") { UsersListScreen(users = dataModel.users, navController = navController, choiceUser = choiceUser)}
-                    composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent()) }
+                    composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
                     composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
                 }
             }
@@ -102,7 +101,7 @@ class ActionActivity : ComponentActivity() {
                     val user = s.getValue(User::class.java)
                     Log.d("myLog","Read user")
                     Log.d("myLog",user.toString())
-                    if(user!=null ) {
+                    if(user!=null && user.name!=profileData.user.name) {
                         users.add(user)
 
                     }
@@ -120,7 +119,7 @@ class ActionActivity : ComponentActivity() {
         dRef.addValueEventListener(object  : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
-                if (user != null) {
+                if (user != null ) {
                     profileData.user = user
                 }
             }

@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.virtualworld.R
+import com.example.virtualworld.data.EditProfileData
 import com.example.virtualworld.data.Message
 import com.example.virtualworld.data.Messages
 import com.example.virtualworld.data.User
@@ -38,14 +39,20 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ChatMessageFieldEnter {
     @Composable
-    fun Show(showEdit:(Boolean)-> Unit,messages: Messages,speechRecognizer: SpeechRecognizer, intent: Intent,user: User){
+    fun Show(showEdit:(Boolean)-> Unit,messages: Messages,speechRecognizer: SpeechRecognizer, intent: Intent,user: User,profileData: EditProfileData){
         var performingSpeechSetup by remember{ mutableStateOf(true) }
         var textField by remember{ mutableStateOf("") }
         val maxLength by remember{ mutableStateOf(100) }
@@ -83,8 +90,8 @@ class ChatMessageFieldEnter {
                         .clickable {
                             if (textField.isNotEmpty()) {
                                 showEdit(false)
-                                messages.messages.add(Message(textField, "", "", false, "0.0.20"))
-                                saveInFirebase(user.name!!,textField)
+                                messages.messages.add(Message("",textField, "", "", false, "0.0.20"))
+                                saveInFirebase(user.name!!,textField, user.lang!!,profileData.user.lang!!)
                             }
                         })
                     Image(painter = painterResource(id = R.drawable.speaker_icon), contentDescription ="Start Listen", modifier = Modifier
@@ -125,7 +132,8 @@ class ChatMessageFieldEnter {
             }
         }
     }
-    private fun saveInFirebase(name: String,content: String):Boolean{
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun saveInFirebase(name: String, content: String, toLang: String, fromLang: String):Boolean{
         Log.d("User Choice"," user name: $name ")
         val ref = FirebaseDatabase.getInstance().getReference("users")
         val auth = Firebase.auth.currentUser?.uid
@@ -134,16 +142,25 @@ class ChatMessageFieldEnter {
                 for (userSnapshot in snapshot.children) {
                     val userId = userSnapshot.key // получаем идентификатор пользователя
                     Log.d("User Choice"," ---- id: $userId")
-                    FirebaseDatabase.getInstance().getReference("messages/$userId").push().setValue(Message(
-                        content,auth,userId,false,
-                        LocalDateTime.now()
-                        .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
-                    ))
-                    FirebaseDatabase.getInstance().getReference("messages/$auth").push().setValue(Message(
-                        content,auth,userId,false,
-                        LocalDateTime.now()
-                            .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
-                    ))
+                    GlobalScope.launch {
+                        var ref = FirebaseDatabase.getInstance().getReference("messages/$auth")
+                        var uid = ref.push().key
+                        val message = Message(
+                            uid,content,auth,userId,true,
+                            LocalDateTime.now()
+                                .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
+                        )
+                        ref.child(uid!!).setValue(message)
+                        val url = "https://translation-service-iota.vercel.app/api/index.py"
+                        val postData = "{\"text\":\"$content\",\"to\":\"$toLang\",\"from\":\"$fromLang\"}"
+                        val transContent = sendPostRequest(url, postData)
+                        ref = FirebaseDatabase.getInstance().getReference("messages/$userId")
+                        uid = ref.push().key
+                        message.uid = uid
+                        message.content = transContent
+                        message.viewStatus = false
+                        ref.child(uid!!).setValue(message)
+                    }
                 }
             }
 
@@ -152,5 +169,22 @@ class ChatMessageFieldEnter {
             }
         })
         return true
+    }
+
+    fun sendPostRequest(url: String, postData: String): String {
+        val urlObj = URL(url)
+        val conn = urlObj.openConnection() as HttpURLConnection
+        conn.requestMethod = "POST"
+        conn.doOutput = true
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.setRequestProperty("charset", "utf-8")
+        conn.setRequestProperty("Accept", "application/json")
+        conn.connectTimeout = 5000
+        conn.readTimeout = 5000
+
+        val postDataBytes = postData.toByteArray(StandardCharsets.UTF_8)
+        conn.outputStream.write(postDataBytes)
+
+        return conn.inputStream.bufferedReader().use { it.readText() }
     }
 }

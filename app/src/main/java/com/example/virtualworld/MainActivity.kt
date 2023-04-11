@@ -121,7 +121,7 @@ class MainActivity : ComponentActivity() {
                         Button(modifier = Modifier.padding(10.dp),
                             enabled = authButton,
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                            onClick = { setError(signIn(email,password).not()) }) {
+                            onClick = { setError(authCheck(email,password).not()) }) {
                             Text(text =getString(R.string.register),color = Color.Black)
                         }
                         Button(modifier = Modifier.padding(10.dp),
@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity() {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("AuthStatus", "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Authentication failed.",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext, getString(R.string.register_failed),Toast.LENGTH_SHORT).show()
                     }
                 }
             return true
@@ -173,7 +173,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("AuthStatus", "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
+                    Toast.makeText(baseContext, getString(R.string.sing_in_failed),
                         Toast.LENGTH_SHORT).show()
                 }
             }
@@ -216,6 +216,7 @@ class MainActivity : ComponentActivity() {
         val database = Firebase.database
         val ref = database.getReference("users/${auth.currentUser?.uid}")
         val user = User(
+            auth.currentUser?.uid,
             auth.currentUser?.displayName ?: "New user",
             "New User",
             0,

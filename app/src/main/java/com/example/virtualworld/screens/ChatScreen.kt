@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.speech.SpeechRecognizer
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.virtualworld.R
+import com.example.virtualworld.data.EditProfileData
 import com.example.virtualworld.data.Message
 import com.example.virtualworld.data.Messages
 import com.example.virtualworld.data.User
@@ -28,21 +28,35 @@ import com.example.virtualworld.ui.element.AvatarForChat
 import com.example.virtualworld.ui.element.ChatMessageField
 import com.example.virtualworld.ui.element.ChatMessageFieldEnter
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 @Composable
-fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognizer, intent: Intent) {
-    onChangeMessage(messages)
+fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognizer, intent: Intent,profileData: EditProfileData) {
+    Log.d("User Choice", "CharScreen is Drawing")
     var showEditField by remember{ mutableStateOf(false) }
+    var mesLoad by remember{ mutableStateOf(false) }
+    // Корутины зе бест
+    LaunchedEffect(Unit) {
+        try {
+            val uid = user.uid!!
+            Log.d("User Choice", "user name: John uid: $uid")
+            messages.messages = onChangeMessage(uid)
+            mesLoad = true
+        }catch (ex: Exception){
+            Log.e("User Choice", "Coroutine error: $ex")
+        }
+    }
     val avatar = AvatarForChat()
     avatar.ShowAvatar(user = user)
-    if(!showEditField)ChatMessageField().Show( { showEditField = it },messages, user)
-    if(showEditField)ChatMessageFieldEnter().Show({ showEditField = it },messages,speechRecognizer,intent, user)
+    if(!showEditField && mesLoad)ChatMessageField().Show( { showEditField = it },messages, user)
+    if(showEditField && mesLoad)ChatMessageFieldEnter().Show({ showEditField = it },messages,speechRecognizer,intent, user,profileData)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,21 +68,28 @@ fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognize
     }
 
 }
-private fun onChangeMessage(messages: Messages){
+suspend fun onChangeMessage(uid:String): ArrayList<Message> = suspendCoroutine { continuation ->
+    Log.d("User Choice", "onChangeMessage() resume")
     val auth = Firebase.auth.currentUser?.uid
     Firebase.database.getReference("/messages/$auth").addValueEventListener(object  : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val arr = arrayListOf<Message>()
             for (s in snapshot.children){
                 val message = s.getValue(Message::class.java)!!
-                arr.add(message)
+                if(message.toUserName == uid || message.fromUserName == uid){
+                    arr.add(message)
+                }
             }
-            messages.messages = arr
-
+            try {
+                continuation.resume(arr)
+            }catch (ex: Exception){
+                Log.e("User Choice", "Coroutine error: $ex")
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
-
+            Log.e("User Choice", "Storage Error: $error")
+            continuation.resume(arrayListOf())
         }
 
     })

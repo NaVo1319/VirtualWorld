@@ -36,7 +36,7 @@ open class Avatar {
         //Отвечает за отображение подсказки о назначении профиля
         var open by remember{ mutableStateOf(false)}
         var opentext by remember{ mutableStateOf(false)}
-        //Отвечает за отображения различных элеентов аватара
+        //Ссылки на объекты в Firebase Storage
         var back by remember{ mutableStateOf("")}
         var body by remember{ mutableStateOf("")}
         var hair by remember{ mutableStateOf("")}
@@ -71,7 +71,7 @@ open class Avatar {
         storageRef.downloadUrl.addOnSuccessListener{
             callback(it.toString())
         }.addOnFailureListener{
-            callback(it.toString())
+            callback("Error: $it")
         }
     }
     //Слой с элементом картинки
@@ -93,6 +93,20 @@ open class Avatar {
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
+    }
+    @Composable
+    open fun CustomAnime(filename: String, contentDescription: String, state: Boolean){
+        var model by remember { mutableStateOf("")}
+        getUrl(filename) { model = it }
+        if(state)Box(modifier = Modifier
+            .fillMaxSize()){
+           AsyncImage(
+                model = model,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
     //Поле для сообщений
     @Composable

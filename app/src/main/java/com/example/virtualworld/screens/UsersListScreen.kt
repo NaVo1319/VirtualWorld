@@ -46,12 +46,7 @@ fun UsersListScreen(users: List<User> ,navController: NavHostController, choiceU
             painter = painterResource(id = R.drawable.background_login),
             contentDescription = "Background Image",
             modifier = Modifier
-                .fillMaxSize()
-                .blur(
-                    radiusX = 100.dp,
-                    radiusY = 100.dp,
-                    edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
-                ),
+                .fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
     }

@@ -13,6 +13,8 @@
     <string name="profile">Profile</string>
     <string name="current_chat">Chat</string>
     <string name="submit">Submit</string>
+    <string name="sing_in_failed">Sing in failed, unknown user</string>
+    <string name="register_failed">Register failed, incorrect email or password</string>
     <string-array name="lang_long">
         <item>russian</item>
         <item>english</item>
