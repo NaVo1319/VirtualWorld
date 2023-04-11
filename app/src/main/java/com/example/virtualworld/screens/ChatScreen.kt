@@ -39,7 +39,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 @Composable
 fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognizer, intent: Intent,profileData: EditProfileData) {
-    Log.d("User Choice", "CharScreen is Drawing")
+    Log.d("User Choice", "ChatScreen is Drawing")
     var showEditField by remember{ mutableStateOf(false) }
     var mesLoad by remember{ mutableStateOf(false) }
     // Корутины зе бест

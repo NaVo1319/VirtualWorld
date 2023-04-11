@@ -52,6 +52,12 @@ fun UsersListScreen(users: List<User> ,navController: NavHostController, choiceU
     }
     Column() {
         RowMenu().Show(navController,0)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            TextField(value = "Find User", onValueChange = {})
+            Button(onClick = { /*TODO*/ }) {
+                Icon(painter = painterResource(id = R.drawable.search), contentDescription = "Search")
+            }
+        }
         LazyColumn() {
             users.map {
                 item {
@@ -67,7 +73,7 @@ fun listItem(user: User, navController:  NavHostController, choiceUser: choiceUs
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { choiceUser.user=user;navController.navigate("chat") },
+            .clickable { choiceUser.user = user;navController.navigate("chat") },
         shape = RoundedCornerShape(60.dp),
         elevation = 25.dp
     ) {
