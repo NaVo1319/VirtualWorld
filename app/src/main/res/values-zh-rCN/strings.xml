@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VirtualWorld</string>
+    <string name="please_sign_in">请登录或注册</string>
+    <string name="email">电邮</string>
+    <string name="password">密码</string>
+    <string name="errorEmailPassword">电子邮件或密码错误：密码必须超过8个字符，电子邮件必须类似于example@gmail.com</string>
+    <string name="sign_in">登录</string>
+    <string name="sign_in_with_Google">使用Google登录</string>
+    <string name="register">登记注册</string>
+    <string name="sing_out">唱出来</string>
+    <string name="age">年龄</string>
+    <string name="users_list">用户</string>
+    <string name="profile">个人资料</string>
+    <string name="current_chat">聊天</string>
+    <string name="submit">提交</string>
+    <string name="sing_in_failed">登录失败，未知用户</string>
+    <string name="register_failed">注册失败，不正确的电子邮件或密码</string>
+</resources>

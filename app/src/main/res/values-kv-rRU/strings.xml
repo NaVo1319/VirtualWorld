@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VirtualWorld</string>
+    <string name="please_sign_in">Пожалуйста авторизируйтесь</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="errorEmailPassword">Ошибка в электронной почте или пароле: пароль должен быть длиннее 8 символов, электронное письмо должно быть похоже на example@gmail.com</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_in_with_Google">Вход через Google</string>
+    <string name="register">Регистрация</string>
+    <string name="sing_out">Выход</string>
+    <string name="age">Возраст</string>
+    <string name="users_list">Пользователи</string>
+    <string name="profile">Профиль</string>
+    <string name="current_chat">Чат</string>
+    <string name="submit">Отправить</string>
+    <string name="sing_in_failed">Ошибка входа, неизвестный пользователь</string>
+    <string name="register_failed">Не удалось зарегистрироваться, неверный адрес электронной почты или пароль</string>
+</resources>

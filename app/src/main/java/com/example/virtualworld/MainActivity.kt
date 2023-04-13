@@ -30,6 +30,7 @@ import androidx.compose.ui.input.key.*
 import com.example.virtualworld.ui.theme.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -101,7 +102,7 @@ class MainActivity : ComponentActivity() {
         )
         var email by remember { mutableStateOf("")}
         var password by remember { mutableStateOf("")}
-        var authButton by remember { mutableStateOf(true)}
+        val authButton by remember { mutableStateOf(true)}
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(10.dp), contentAlignment = Alignment.Center){
@@ -110,21 +111,27 @@ class MainActivity : ComponentActivity() {
                     Text(text = getString(R.string.email),modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
                     TextField(value = email, onValueChange = {email = it}, modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.dp)
+                        .testTag("email"),
                         colors = colors)
                     Text(text = getString(R.string.password),modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
                     TextField(value = password, onValueChange = {password = it}, modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.dp)
+                        .testTag("password"),
                         colors = colors)
                     Row() {
-                        Button(modifier = Modifier.padding(10.dp),
+                        Button(modifier = Modifier
+                            .padding(10.dp)
+                            .testTag("reg"),
                             enabled = authButton,
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                             onClick = { setError(authCheck(email,password).not()) }) {
                             Text(text =getString(R.string.register),color = Color.Black)
                         }
-                        Button(modifier = Modifier.padding(10.dp),
+                        Button(modifier = Modifier
+                            .padding(10.dp)
+                            .testTag("login"),
                             enabled = authButton,
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                             onClick = { setError(signIn(email,password).not()) }) {
@@ -135,7 +142,12 @@ class MainActivity : ComponentActivity() {
                         painter = painterResource(id = R.drawable.google_login_icon),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(80.dp).clip(CircleShape).padding(10.dp).clickable { signInWithGoogle() }
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .padding(10.dp)
+                            .clickable { signInWithGoogle() }
+                            .testTag("login google")
                     )
                 }
             }
