@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -38,9 +39,19 @@ import com.example.virtualworld.data.choiceUserData
 import com.example.virtualworld.ui.element.Avatar
 import com.example.virtualworld.ui.element.AvatarForUserList
 import com.example.virtualworld.ui.element.RowMenu
+import javax.sql.StatementEvent
 
 @Composable
-fun UsersListScreen(users: List<User> ,navController: NavHostController, choiceUser: choiceUserData) {
+fun UsersListScreen(usersList: List<User> ,navController: NavHostController, choiceUser: choiceUserData) {
+    var users by remember { mutableStateOf(usersList)}
+    var searchText by remember { mutableStateOf("")}
+    val colors = TextFieldDefaults.textFieldColors(
+        backgroundColor = Color.Black.copy(alpha = 0.7f),
+        cursorColor = Color.White,
+        disabledLabelColor = Color.White,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent
+    )
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.background_login),
@@ -53,10 +64,19 @@ fun UsersListScreen(users: List<User> ,navController: NavHostController, choiceU
     Column() {
         RowMenu().Show(navController,0)
         Row(modifier = Modifier.fillMaxWidth()) {
-            TextField(value = "Find User", onValueChange = {})
-            Button(onClick = { /*TODO*/ }) {
-                Icon(painter = painterResource(id = R.drawable.search), contentDescription = "Search")
-            }
+            TextField(value = searchText,
+                placeholder = { Text("Find User") },
+                onValueChange = {searchText = it},
+                modifier = Modifier.weight(5f),
+                colors = colors,
+                textStyle = TextStyle(color = Color.White)
+            )
+            Image(painter = painterResource(id = R.drawable.search), contentDescription ="Search", modifier = Modifier
+                .padding(5.dp)
+                .size(50.dp)
+                .weight(1f)
+                .background(Color.Black.copy(alpha = 0.7f))
+                .clickable {users = findUsers(searchText, usersList)} )
         }
         LazyColumn() {
             users.map {
@@ -86,4 +106,8 @@ fun listItem(user: User, navController:  NavHostController, choiceUser: choiceUs
             }
         }
     }
+}
+fun findUsers(pattern: String,users: List<User>):List<User>{
+    if(pattern == "") return users
+    return users.filter { it.name!!.contains(pattern) }
 }

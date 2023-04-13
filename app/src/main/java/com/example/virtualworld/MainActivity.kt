@@ -141,10 +141,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private fun authCheck(email: String, password: String): Boolean{
+    private fun authCheck(email_: String, password_: String): Boolean{
+        val email = email_.replace(" ","")
+        val password = password_.replace(" ","")
         val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
-        if(emailPattern.matches(email) && password.length>=8){
-            auth.createUserWithEmailAndPassword(email, password)
+        Log.d("AuthStatus", "$email $password ${emailPattern.matches(email)} and ${password.length>=8}")
+        if(emailPattern.matches(email.replace(" ","")) && password.length>=8){
+            auth.createUserWithEmailAndPassword(email.replace(" ",""), password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information

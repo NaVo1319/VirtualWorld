@@ -74,7 +74,7 @@ class ActionActivity : ComponentActivity() {
             Column() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "users") {
-                    composable("users") { UsersListScreen(users = dataModel.users, navController = navController, choiceUser = choiceUser)}
+                    composable("users") { UsersListScreen(usersList = dataModel.users, navController = navController, choiceUser = choiceUser)}
                     composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
                     composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
                 }
