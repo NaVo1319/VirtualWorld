@@ -65,7 +65,6 @@ class MainActivity : ComponentActivity() {
             }catch (e: ApiException){
                 Log.d("My log","Api exception")}
         }
-        checkAuthState()
         setContent {
             var errorMes by remember { mutableStateOf(false)}
             Box(modifier = Modifier.fillMaxSize()){
@@ -158,14 +157,23 @@ class MainActivity : ComponentActivity() {
         val password = password_.replace(" ","")
         val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
         Log.d("AuthStatus", "$email $password ${emailPattern.matches(email)} and ${password.length>=8}")
-        if(emailPattern.matches(email.replace(" ","")) && password.length>=8){
+        if(emailPattern.matches(email.replace(" ",""))&& password.length>=8){
             auth.createUserWithEmailAndPassword(email.replace(" ",""), password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d("AuthStatus", "createUserWithEmail:success")
-                        saveUser()
-                        checkAuthState()
+                        auth.currentUser!!.sendEmailVerification().addOnSuccessListener{
+                            Toast.makeText(baseContext, "Please verify your email",Toast.LENGTH_SHORT).show()
+                            if(task.isSuccessful){
+                                Log.d("AuthStatus", "createUserWithEmail:success")
+                                saveUser()
+                            }else{
+                                Toast.makeText(baseContext, task.exception.toString(),Toast.LENGTH_SHORT).show()
+                            }
+                        }.addOnFailureListener {
+                            Toast.makeText(baseContext, it.message, Toast.LENGTH_SHORT).show()
+                            // add code here to handle failed email verification
+                        }
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("AuthStatus", "createUserWithEmail:failure", task.exception)
@@ -180,11 +188,12 @@ class MainActivity : ComponentActivity() {
     private fun signIn(email: String, password: String): Boolean{
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
+                if (task.isSuccessful ) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("AuthStatus", "signInWithEmail:success")
                     val user = auth.currentUser
-                    checkAuthState()
+                    if(user!!.isEmailVerified)checkAuthState()
+                    else Toast.makeText(baseContext, "Email is not verify",Toast.LENGTH_SHORT).show()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("AuthStatus", "signInWithEmail:failure", task.exception)
