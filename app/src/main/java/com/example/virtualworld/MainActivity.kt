@@ -47,6 +47,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.delay
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -66,17 +67,30 @@ class MainActivity : ComponentActivity() {
                 Log.d("My log","Api exception")}
         }
         setContent {
-            var errorMes by remember { mutableStateOf(false)}
-            Box(modifier = Modifier.fillMaxSize()){
-                Image(
-                    painter = painterResource(id = R.drawable.background_login),
-                    contentDescription = "Background Image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
-                )
+            var internetStatus by remember{ mutableStateOf(InternetTest().isInternetConnected(this))}
+            if(internetStatus) {
+                InternetTest().ShowError()
+                LaunchedEffect(true){
+                    while (internetStatus){
+                        delay(10000)
+                        internetStatus = InternetTest().isInternetConnected(this@MainActivity)
+                    }
+                }
             }
-            form { errorMes = it }
-            errorMessage(errorMes)
+            else{
+                checkAuthState()
+                var errorMes by remember { mutableStateOf(false)}
+                Box(modifier = Modifier.fillMaxSize()){
+                    Image(
+                        painter = painterResource(id = R.drawable.background_login),
+                        contentDescription = "Background Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+                form { errorMes = it }
+                errorMessage(errorMes)
+            }
         }
     }
     @Composable

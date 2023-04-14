@@ -41,6 +41,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -71,12 +72,23 @@ class ActionActivity : ComponentActivity() {
         onChangeUser(database.getReference("/users/${auth.uid}"))
         onChangeListener(database.getReference("/users"))
         setContent {
-            Column() {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "users") {
-                    composable("users") { UsersListScreen(usersList = dataModel.users, navController = navController, choiceUser = choiceUser)}
-                    composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
-                    composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
+            var internetStatus by remember{ mutableStateOf(InternetTest().isInternetConnected(this))}
+            if(!internetStatus) {
+                InternetTest().ShowError()
+                LaunchedEffect(true){
+                    while (internetStatus){
+                        delay(10000)
+                        internetStatus = InternetTest().isInternetConnected(this@ActionActivity)
+                    }
+                }
+            }else{
+                Column() {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "users") {
+                        composable("users") { UsersListScreen(usersList = dataModel.users, navController = navController, choiceUser = choiceUser)}
+                        composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
+                        composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
+                    }
                 }
             }
         }
