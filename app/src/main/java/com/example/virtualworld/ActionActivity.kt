@@ -72,23 +72,12 @@ class ActionActivity : ComponentActivity() {
         onChangeUser(database.getReference("/users/${auth.uid}"))
         onChangeListener(database.getReference("/users"))
         setContent {
-            var internetStatus by remember{ mutableStateOf(InternetTest().isInternetConnected(this))}
-            if(!internetStatus) {
-                InternetTest().ShowError()
-                LaunchedEffect(true){
-                    while (internetStatus){
-                        delay(10000)
-                        internetStatus = InternetTest().isInternetConnected(this@ActionActivity)
-                    }
-                }
-            }else{
-                Column() {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "users") {
-                        composable("users") { UsersListScreen(usersList = dataModel.users, navController = navController, choiceUser = choiceUser)}
-                        composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
-                        composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
-                    }
+            Column() {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "users") {
+                    composable("users") { UsersListScreen(usersList = dataModel.users, navController = navController, choiceUser = choiceUser)}
+                    composable("chat") { ChatScreen(choiceUser.user, messages, speechRecognizer, makeSpeechRecognitionIntent(),profileData = profileData) }
+                    composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
                 }
             }
         }

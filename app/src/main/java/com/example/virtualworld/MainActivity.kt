@@ -67,30 +67,18 @@ class MainActivity : ComponentActivity() {
                 Log.d("My log","Api exception")}
         }
         setContent {
-            var internetStatus by remember{ mutableStateOf(InternetTest().isInternetConnected(this))}
-            if(internetStatus) {
-                InternetTest().ShowError()
-                LaunchedEffect(true){
-                    while (internetStatus){
-                        delay(10000)
-                        internetStatus = InternetTest().isInternetConnected(this@MainActivity)
-                    }
-                }
+            checkAuthState()
+            var errorMes by remember { mutableStateOf(false)}
+            Box(modifier = Modifier.fillMaxSize()){
+                Image(
+                    painter = painterResource(id = R.drawable.background_login),
+                    contentDescription = "Background Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds
+                )
             }
-            else{
-                checkAuthState()
-                var errorMes by remember { mutableStateOf(false)}
-                Box(modifier = Modifier.fillMaxSize()){
-                    Image(
-                        painter = painterResource(id = R.drawable.background_login),
-                        contentDescription = "Background Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
-                form { errorMes = it }
-                errorMessage(errorMes)
-            }
+            form { errorMes = it }
+            errorMessage(errorMes)
         }
     }
     @Composable
@@ -125,13 +113,13 @@ class MainActivity : ComponentActivity() {
                     TextField(value = email, onValueChange = {email = it}, modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        .testTag("email"),
+                        .testTag("Email"),
                         colors = colors)
                     Text(text = getString(R.string.password),modifier = Modifier.padding(10.dp), color = Color.White, fontSize = 24.sp)
                     TextField(value = password, onValueChange = {password = it}, modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        .testTag("password"),
+                        .testTag("Password"),
                         colors = colors)
                     Row() {
                         Button(modifier = Modifier
@@ -200,6 +188,7 @@ class MainActivity : ComponentActivity() {
         }
     }
     private fun signIn(email: String, password: String): Boolean{
+        if(email == "" || password == "")return false
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful ) {
@@ -246,8 +235,11 @@ class MainActivity : ComponentActivity() {
     }
     private fun checkAuthState(){
         if(auth.currentUser!=null){
-            val i = Intent(this,ActionActivity::class.java)
-            startActivity(i)
+            if(!auth.currentUser!!.isEmailVerified)Toast.makeText(baseContext, "Email is not verify",Toast.LENGTH_SHORT).show()
+            else{
+                val i = Intent(this,ActionActivity::class.java)
+                startActivity(i)
+            }
         }
     }
     private fun saveUser(){
