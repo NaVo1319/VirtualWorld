@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +34,7 @@ class EditAvatar {
         var hair by remember { mutableStateOf(user.user.hair)}
         var body by remember { mutableStateOf(user.user.body)}
         var cloths by remember { mutableStateOf(user.user.cloths)}
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
+        Box(modifier = Modifier.fillMaxSize().testTag("AvatarSettings"), contentAlignment = Alignment.BottomCenter){
             Column() {
                 Row() {
                     Column(modifier = Modifier
@@ -82,7 +83,7 @@ class EditAvatar {
             onClick = onClick,
             modifier = Modifier
                 .padding(8.dp)
-                .size(50.dp),
+                .size(50.dp).testTag(contentDescription),
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black.copy(alpha = 0.7f))
         ) {

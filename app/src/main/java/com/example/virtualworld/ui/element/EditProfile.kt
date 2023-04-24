@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -40,7 +41,7 @@ class EditProfile() {
         Log.d("ProfileMyLog","user exist: ${profileData.user}")
         database = Firebase.database
         authuser = profileData.user
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        Box(modifier = Modifier.fillMaxSize().testTag("DataSettings"), contentAlignment = Alignment.Center){
             var name by remember { mutableStateOf(authuser.name)}
             var lang by remember { mutableStateOf(authuser.lang)}
             var age by remember { mutableStateOf(authuser.age.toString())}

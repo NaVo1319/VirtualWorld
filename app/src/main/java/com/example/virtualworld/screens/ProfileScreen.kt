@@ -71,7 +71,8 @@ fun CircleButton(onClick: () -> Unit, icon: ImageVector,contentDescription: Stri
         onClick = onClick,
         modifier = Modifier
             .padding(8.dp)
-            .size(50.dp),
+            .size(50.dp)
+            .testTag(contentDescription),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black.copy(alpha = 0.7f)),
         border = BorderStroke(1.dp, Color.White)

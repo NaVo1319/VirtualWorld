@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +56,8 @@ open class Avatar {
         Log.d("AvatarMyLog","body: ${body}\nhair: $hair\ncloth:  $cloths\nBack:  $back")
         Box(modifier = Modifier
             .fillMaxSize()
-            .clickable { if (!opentext) opentext = true }){
+            .clickable { if (!opentext) opentext = true }
+            .testTag("Avatar")){
             ImageLayer(back,"Background")
             ImageLayer(body,"Body")
             ImageLayer(hair,"Hair")
@@ -119,7 +121,7 @@ open class Avatar {
     //Текстовое поле для сообщений
     @Composable
     open fun TextLayer(f:()->Unit,text:String){
-        Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.Center){
+        Box(modifier = Modifier.fillMaxSize().testTag("textSay"),contentAlignment = Alignment.Center){
             Card(modifier = Modifier
                 .offset(0.dp, 40.dp)
                 .border(BorderStroke(1.dp, Color.White))
