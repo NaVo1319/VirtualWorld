@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -55,10 +56,10 @@ fun ProfileScreen(profileData: EditProfileData,navController: NavHostController)
     Column() {
         RowMenu().Show(navController,1)
         Box() {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd){
+            Box(modifier = Modifier.fillMaxSize().testTag("EditAvatar"), contentAlignment = Alignment.TopEnd){
                 if(!edit)CircleButton(onClick = {editAvatar = editAvatar == false}, icon = if(editAvatar)Icons.Outlined.Close  else Icons.Default.Face, contentDescription = "Setting avatar Button")
             }
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart){
+            Box(modifier = Modifier.fillMaxSize().testTag("EditData"), contentAlignment = Alignment.TopStart){
                 if(!editAvatar)CircleButton(onClick = { edit = edit==false }, icon = if(edit)Icons.Outlined.Close  else Icons.Default.Edit, contentDescription = "Setting Button")
             }
         }
@@ -92,7 +93,8 @@ fun singOutButton(auth: FirebaseAuth, activity: Activity){
     },
         modifier = Modifier
             .padding(8.dp)
-            .size(50.dp),
+            .size(50.dp)
+            .testTag("Exit"),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black.copy(alpha = 0.7f)),
         border = BorderStroke(1.dp, Color.White)

@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,7 @@ fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognize
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .testTag("ChatScreen")
         ,backgroundColor = Color.Black.copy(alpha = 0.7f)
     ){
         Text(text = user.name ?: "No Data", color = Color.White, fontSize = 25.sp, modifier = Modifier

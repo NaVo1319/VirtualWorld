@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -67,7 +68,7 @@ fun UsersListScreen(usersList: List<User> ,navController: NavHostController, cho
             TextField(value = searchText,
                 placeholder = { Text("Find User") },
                 onValueChange = {searchText = it},
-                modifier = Modifier.weight(5f),
+                modifier = Modifier.weight(5f).testTag("FindField"),
                 colors = colors,
                 textStyle = TextStyle(color = Color.White)
             )
@@ -76,7 +77,8 @@ fun UsersListScreen(usersList: List<User> ,navController: NavHostController, cho
                 .size(50.dp)
                 .weight(1f)
                 .background(Color.Black.copy(alpha = 0.7f))
-                .clickable {users = findUsers(searchText, usersList)} )
+                .clickable {users = findUsers(searchText, usersList)}
+                .testTag("Search"))
         }
         LazyColumn() {
             users.map {
@@ -93,7 +95,8 @@ fun listItem(user: User, navController:  NavHostController, choiceUser: choiceUs
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { choiceUser.user = user;navController.navigate("chat") },
+            .clickable { choiceUser.user = user;navController.navigate("chat") }
+            .testTag("Item"),
         shape = RoundedCornerShape(60.dp),
         elevation = 25.dp
     ) {
