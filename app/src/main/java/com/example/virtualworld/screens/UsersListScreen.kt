@@ -44,7 +44,10 @@ import javax.sql.StatementEvent
 
 @Composable
 fun UsersListScreen(usersList: List<User> ,navController: NavHostController, choiceUser: choiceUserData) {
-    var users by remember { mutableStateOf(usersList)}
+    var users by remember { mutableStateOf(emptyList<User>())}
+    users = usersList
+    Log.d("usersList",usersList.toString())
+    Log.d("usersList_users",users.toString())
     var searchText by remember { mutableStateOf("")}
     val colors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Black.copy(alpha = 0.7f),
@@ -68,7 +71,9 @@ fun UsersListScreen(usersList: List<User> ,navController: NavHostController, cho
             TextField(value = searchText,
                 placeholder = { Text("Find User") },
                 onValueChange = {searchText = it},
-                modifier = Modifier.weight(5f).testTag("FindField"),
+                modifier = Modifier
+                    .weight(5f)
+                    .testTag("FindField"),
                 colors = colors,
                 textStyle = TextStyle(color = Color.White)
             )
@@ -77,7 +82,7 @@ fun UsersListScreen(usersList: List<User> ,navController: NavHostController, cho
                 .size(50.dp)
                 .weight(1f)
                 .background(Color.Black.copy(alpha = 0.7f))
-                .clickable {users = findUsers(searchText, usersList)}
+                .clickable { users = findUsers(searchText, usersList).toMutableList() }
                 .testTag("Search"))
         }
         LazyColumn() {

@@ -41,22 +41,29 @@ class EditProfile() {
         Log.d("ProfileMyLog","user exist: ${profileData.user}")
         database = Firebase.database
         authuser = profileData.user
-        Box(modifier = Modifier.fillMaxSize().testTag("DataSettings"), contentAlignment = Alignment.Center){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .testTag("DataSettings"), contentAlignment = Alignment.Center){
             var name by remember { mutableStateOf(authuser.name)}
             var lang by remember { mutableStateOf(authuser.lang)}
             var age by remember { mutableStateOf(authuser.age.toString())}
             var description by remember { mutableStateOf(   authuser.description)}
-            Card(modifier = Modifier.border(BorderStroke(4.dp, Color.White)).fillMaxWidth().height(430.dp),backgroundColor = Color.Black.copy(alpha = 0.7f)) {
+            Card(modifier = Modifier
+                .border(BorderStroke(4.dp, Color.White))
+                .fillMaxWidth()
+                .height(430.dp),backgroundColor = Color.Black.copy(alpha = 0.7f)) {
                 Box(){
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(16.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
                     ) {
                         items(listOf("")) {
-                            Text(text = "Edit Your Profile", fontSize = 35.sp, color = Color.White)
-                            textField(nameField = "Nick name",{name = it},name.toString())
-                            textField(nameField = "Description",{description = it},description.toString())
+                            Text(text = stringResource(id = R.string.edit_your_profile), fontSize = 35.sp, color = Color.White)
+                            textField(nameField = stringResource(id = R.string.nick_name),{name = it},name.toString())
+                            textField(nameField = stringResource(id =R.string.description),{description = it},description.toString())
                             DropDawnMenu(items = stringArrayResource(R.array.lang_short), title = "Lang", 0)
-                            numberField(nameField = "Age",{age = it },age)
+                            numberField(nameField = stringResource(id =R.string.age),{age = it },age)
                             SubmitButton(name.toString(),description.toString(), age = age,function)
                         }
                     }

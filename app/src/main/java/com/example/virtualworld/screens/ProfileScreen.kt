@@ -47,7 +47,7 @@ fun ProfileScreen(profileData: EditProfileData,navController: NavHostController)
     val avatarEdit = EditAvatar()
     var edit by remember { mutableStateOf(false)}
     var editAvatar by remember { mutableStateOf(false)}
-    Avatar().ShowAvatar(profileData.user)
+    Avatar().ShowAvatar(profileData.user,stringResource(id = R.string.profile_description))
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart){
         if(edit == editAvatar)singOutButton(auth = auth, activity = activity!!)
     }

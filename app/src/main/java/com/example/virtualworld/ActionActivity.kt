@@ -111,7 +111,7 @@ class ActionActivity : ComponentActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                Log.d("myLog", error.toString())
             }
 
         })
@@ -126,7 +126,7 @@ class ActionActivity : ComponentActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                Log.d("myLog", error.toString())
             }
 
         })

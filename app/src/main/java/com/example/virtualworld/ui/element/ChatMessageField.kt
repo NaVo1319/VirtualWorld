@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.virtualworld.R
@@ -33,7 +34,6 @@ class ChatMessageField {
         var text by remember{ mutableStateOf("") }
         Log.d("mess number"," ${messageList.size}  $mesIt")
         var anim by remember { mutableStateOf(false)}
-        AvatarForChat().CustomAnime(filename = "Body/Mouth.png", contentDescription = "", state = anim)
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd){
             if(StartPrint)Image(painter = painterResource(id = R.drawable.exclamation_mark), contentDescription ="Show new message", modifier = Modifier
                 .padding(30.dp, 60.dp)
@@ -48,11 +48,13 @@ class ChatMessageField {
                     Image(painter = painterResource(id = R.drawable.edit), contentDescription ="Write Message", modifier = Modifier
                         .padding(10.dp)
                         .size(50.dp)
-                        .clickable { showEdit(true) })
+                        .clickable { showEdit(true) }
+                        .testTag("Write Message"))
                 }
                 if(mesIt>0)Image(painter = painterResource(id = R.drawable.custom_arrow_left), contentDescription ="Previous  message", modifier = Modifier
                     .size(50.dp)
-                    .clickable { --mesIt; text = "" } )
+                    .clickable { --mesIt; text = "" }
+                    .testTag("Previous  message"))
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -81,7 +83,8 @@ class ChatMessageField {
             if(mesIt<messageList.size-1)Image(painter = painterResource(id = R.drawable.custom_arrow), contentDescription ="Next message", modifier = Modifier
                 .padding(5.dp)
                 .size(40.dp)
-                .clickable { ++mesIt; text = "" } )
+                .clickable { ++mesIt; text = "" }
+                .testTag("Next message"))
             else StartPrint = false
         }
     }

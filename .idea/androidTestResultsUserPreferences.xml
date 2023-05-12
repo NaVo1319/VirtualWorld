@@ -94,7 +94,9 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_2_API_30" value="120" />
+                  <entry key="RZ8M81MLQHB" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A505FM" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -136,6 +138,34 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_2_API_30" value="120" />
+                  <entry key="RZ8M81MLQHB" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A505FM" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="267240759">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="RZ8M81MLQHB" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A505FM" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="333665529">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
                   <entry key="RZ8M81MLQHB" value="120" />
                   <entry key="Tests" value="360" />
                   <entry key="samsung&#10; SM-A505FM" value="120" />
@@ -189,6 +219,20 @@
           </value>
         </entry>
         <entry key="1155689706">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="RZ8M81MLQHB" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A505FM" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="2035783929">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">

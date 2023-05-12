@@ -47,4 +47,11 @@
         <item>hi</item>
         <item>tr</item>
     </string-array>
+    <string name="empty_user_list">Find your friends</string>
+    <string name="refresh">Refresh</string>
+    <string name="edit_your_profile">Edit Your Profile</string>
+    <string name="nick_name">Nick name</string>
+    <string name="description">Description</string>
+    <string name="lang">Lang</string>
+    <string name="profile_description">f</string>
 </resources>

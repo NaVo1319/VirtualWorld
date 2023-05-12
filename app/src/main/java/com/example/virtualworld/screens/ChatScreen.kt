@@ -1,41 +1,29 @@
 package com.example.virtualworld.screens
 
-import android.content.Context
 import android.content.Intent
 import android.speech.SpeechRecognizer
 import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.virtualworld.R
 import com.example.virtualworld.data.EditProfileData
 import com.example.virtualworld.data.Message
 import com.example.virtualworld.data.Messages
 import com.example.virtualworld.data.User
 import com.example.virtualworld.ui.element.Avatar
-import com.example.virtualworld.ui.element.AvatarForChat
 import com.example.virtualworld.ui.element.ChatMessageField
 import com.example.virtualworld.ui.element.ChatMessageFieldEnter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 @Composable
@@ -54,8 +42,8 @@ fun ChatScreen(user: User, messages: Messages, speechRecognizer: SpeechRecognize
             Log.e("User Choice", "Coroutine error: $ex")
         }
     }
-    val avatar = AvatarForChat()
-    avatar.ShowAvatar(user = user)
+    val avatar = Avatar()
+    avatar.ShowAvatar(user = user,user.description!!)
     if(!showEditField && mesLoad)ChatMessageField().Show( { showEditField = it },messages, user)
     if(showEditField && mesLoad)ChatMessageFieldEnter().Show({ showEditField = it },messages,speechRecognizer,intent, user,profileData)
     Card(

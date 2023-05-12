@@ -16,4 +16,11 @@
     <string name="submit">提交</string>
     <string name="sing_in_failed">登录失败，未知用户</string>
     <string name="register_failed">注册失败，不正确的电子邮件或密码</string>
+    <string name="empty_user_list">寻找你的朋友</string>
+    <string name="refresh">刷新</string>
+    <string name="edit_your_profile">编辑您的个人资料</string>
+    <string name="nick_name">昵称</string>
+    <string name="description">资料描述</string>
+    <string name="lang">朗</string>
+    <string name="profile_description">这是您的个人资料，在这里您可以更改您的数据和您的外观！</string>
 </resources>

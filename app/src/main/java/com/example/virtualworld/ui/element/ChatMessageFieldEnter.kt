@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,7 @@ class ChatMessageFieldEnter {
             override fun onError(error: Int) {
                 if (performingSpeechSetup && error == SpeechRecognizer.ERROR_NO_MATCH) return
                 Log.d("Speech","onError")
-                textField = "Error: $error"
+                textField = "Error recording: $error"
             }
             override fun onResults(results: Bundle?) {
                 Log.d("Speech","onResults")
@@ -97,7 +98,8 @@ class ChatMessageFieldEnter {
                     Image(painter = painterResource(id = R.drawable.speaker_icon), contentDescription ="Start Listen", modifier = Modifier
                         .padding(10.dp)
                         .size(50.dp)
-                        .clickable {speechRecognizer.startListening(intent)} )
+                        .clickable {speechRecognizer.startListening(intent)}
+                        .testTag("Start Listen"))
                 }
                 Card(
                     modifier = Modifier
@@ -115,7 +117,7 @@ class ChatMessageFieldEnter {
                         }
                         TextField(value = textField, onValueChange = {textField = it}, modifier = Modifier
                             .fillMaxWidth()
-                            .weight(3f),
+                            .weight(3f).testTag("Enter message"),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.White,
                                 cursorColor = Color.White,

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 open class Avatar {
     //Главная функция отображения
     @Composable
-    fun ShowAvatar(user: User){
+    fun ShowAvatar(user: User,sayText: String){
         //Отвечает за отображение подсказки о назначении профиля
         var open by remember{ mutableStateOf(false)}
         var opentext by remember{ mutableStateOf(false)}
@@ -64,7 +65,7 @@ open class Avatar {
             ImageLayer(cloths,"Cloths")
             if(open)AnimLayer(mouthOpen, "Mouth Open" )
         }
-        MessageField({ opentext = false; text = "" },{ text += it },{open=open==it},text,opentext)
+        MessageField({ opentext = false; text = "" },{ text += it },{open=open==it},text,opentext,sayText)
         Log.d("OpenLog","$open")
     }
     //Получить ссылку
@@ -112,16 +113,18 @@ open class Avatar {
     }
     //Поле для сообщений
     @Composable
-    open fun MessageField(textLayerF1:()->Unit,textSayF1:(String)->Unit,textSayF2:(Boolean)->Unit,text:String,opentext:Boolean){
+    open fun MessageField(textLayerF1:()->Unit,textSayF1:(String)->Unit,textSayF2:(Boolean)->Unit,text:String,opentext:Boolean,sayText: String){
         if(opentext) {
             TextLayer (textLayerF1,text)
-            TextSay(textSayF1,textSayF2)
+            TextSay(textSayF1,textSayF2,sayText)
         }
     }
     //Текстовое поле для сообщений
     @Composable
     open fun TextLayer(f:()->Unit,text:String){
-        Box(modifier = Modifier.fillMaxSize().testTag("textSay"),contentAlignment = Alignment.Center){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .testTag("textSay"),contentAlignment = Alignment.Center){
             Card(modifier = Modifier
                 .offset(0.dp, 40.dp)
                 .border(BorderStroke(1.dp, Color.White))
@@ -132,7 +135,7 @@ open class Avatar {
     }
     //Поток анимации и вывода текста
     @Composable
-    open fun TextSay(add:(String)->Unit,move:(Boolean)->Unit){
+    open fun TextSay(add:(String)->Unit,move:(Boolean)->Unit, sayText:String){
         //Анимация
         Thread{
             var  i=0
@@ -144,9 +147,8 @@ open class Avatar {
         }.start()
         //Вывод текста
         LaunchedEffect(Unit) {
-            val textStatic = "Это твой профиль, здесь ты можешь изменить свои данные и свой внешний вид!"
-            for (i in textStatic.indices) {
-                add(textStatic[i].toString())
+            for (i in sayText.indices) {
+                add(sayText[i].toString())
                 delay(40)
             }
         }

@@ -16,4 +16,11 @@
     <string name="submit">Отправить</string>
     <string name="sing_in_failed">Ошибка входа, неизвестный пользователь</string>
     <string name="register_failed">Не удалось зарегистрироваться, неверный адрес электронной почты или пароль</string>
+    <string name="empty_user_list">Найди своих друзей</string>
+    <string name="refresh">Обновить</string>
+    <string name="profile_description">Это твой профиль, здесь ты можешь изменить свои данные и свой внешний вид!</string>
+    <string name="edit_your_profile">Редактирование профиля</string>
+    <string name="nick_name">Имя</string>
+    <string name="description">Описание</string>
+    <string name="lang">Язык</string>
 </resources>
