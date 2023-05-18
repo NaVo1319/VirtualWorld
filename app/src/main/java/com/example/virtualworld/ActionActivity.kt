@@ -39,10 +39,7 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.suspendCoroutine
@@ -80,6 +77,16 @@ class ActionActivity : ComponentActivity() {
                     composable("profile") { ProfileScreen(profileData = profileData, navController = navController) }
                 }
             }
+            var error by remember { mutableStateOf(false)}
+            Log.i("InternetErrorState", error.toString())
+            LaunchedEffect(Unit) {
+                while (true){
+                    error = !InternetTest().isOnline(this@ActionActivity)
+                    delay(5000)
+
+                }
+            }
+            if(error)InternetTest().ShowError()
         }
     }
     private fun getPermissionOver(context: Context){

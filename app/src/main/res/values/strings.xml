@@ -54,4 +54,5 @@
     <string name="description">Description</string>
     <string name="lang">Lang</string>
     <string name="profile_description">f</string>
+    <string name="warning_text">Oh it looks like the internet connection is not stable, your data will not be saved</string>
 </resources>

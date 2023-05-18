@@ -23,4 +23,5 @@
     <string name="description">资料描述</string>
     <string name="lang">朗</string>
     <string name="profile_description">这是您的个人资料，在这里您可以更改您的数据和您的外观！</string>
+    <string name="warning_text">哦，看起来互联网连接不稳定，你的数据不会被保存</string>
 </resources>
