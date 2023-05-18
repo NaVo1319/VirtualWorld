@@ -36,7 +36,9 @@ class InternetTest {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-
+                        shape = RoundedCornerShape(8.dp),
+                        backgroundColor = Color.Red
+                    ) {
 
 
 
