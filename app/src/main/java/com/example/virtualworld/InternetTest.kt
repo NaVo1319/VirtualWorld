@@ -49,8 +49,8 @@ class InternetTest {
                                 tint = Color.White
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-
-
+                            Text(
+                                text = "Some Text",
 
 
 
