@@ -54,6 +54,6 @@ class InternetTest {
                                 color = Color.White
                             )
                         }
-
+                    }
 
 
