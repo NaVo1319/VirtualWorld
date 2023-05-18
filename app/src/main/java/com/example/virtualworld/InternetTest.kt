@@ -30,6 +30,9 @@ class InternetTest {
             ?: false
     }
     @Composable
+    fun ShowError(){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
+                    Card(
 
 
 
