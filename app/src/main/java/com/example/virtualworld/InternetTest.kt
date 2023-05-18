@@ -44,8 +44,8 @@ class InternetTest {
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Icon(
-
-
+                                painter = painterResource(R.drawable.ic_exclamation_mark),
+                                contentDescription = null,
 
 
 
