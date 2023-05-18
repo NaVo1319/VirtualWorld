@@ -33,6 +33,9 @@ class InternetTest {
     fun ShowError(){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
                     Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
 
 
 
