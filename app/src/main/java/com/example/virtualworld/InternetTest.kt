@@ -46,9 +46,9 @@ class InternetTest {
                             Icon(
                                 painter = painterResource(R.drawable.ic_exclamation_mark),
                                 contentDescription = null,
-
-
-
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
 
 
 
