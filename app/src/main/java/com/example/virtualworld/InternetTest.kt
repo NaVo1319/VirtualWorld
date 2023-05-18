@@ -42,8 +42,8 @@ class InternetTest {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(16.dp)
-
-
+                        ) {
+                            Icon(
 
 
 
