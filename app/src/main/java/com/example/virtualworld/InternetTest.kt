@@ -39,9 +39,9 @@ class InternetTest {
                         shape = RoundedCornerShape(8.dp),
                         backgroundColor = Color.Red
                     ) {
-
-
-
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(16.dp)
 
 
 
