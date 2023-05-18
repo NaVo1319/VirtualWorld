@@ -53,7 +53,7 @@ class InternetTest {
                                 text = "Some Text",
                                 color = Color.White
                             )
-
+                        }
 
 
 
